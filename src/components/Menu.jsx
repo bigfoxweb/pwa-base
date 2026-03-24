@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 export default function Menu() {
   const location = useLocation();
@@ -19,7 +19,7 @@ export default function Menu() {
             to={link.to}
             className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
               ativo
-                ? "bg-[#7d2211] text-white"
+                ? "bg-[#81c90e] text-white"
                 : "bg-white text-gray-700 shadow-sm"
             }`}
           >

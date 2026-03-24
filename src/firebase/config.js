@@ -1,3 +1,4 @@
+console.log("firebase/config carregou");
 import { initializeApp, getApps } from "firebase/app";
 
 const firebaseConfig = {
@@ -17,8 +18,14 @@ let app = null;
 
 if (temConfigValida(firebaseConfig)) {
   app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+
+  if (import.meta.env.DEV) {
+    console.log("Firebase inicializado:", app.name);
+  }
+
 } else {
   console.warn("Firebase não configurado");
 }
 
 export default app;
+

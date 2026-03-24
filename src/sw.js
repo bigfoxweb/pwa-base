@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /// <reference lib="webworker" />
 
 import { clientsClaim } from "workbox-core";
@@ -27,10 +28,9 @@ self.addEventListener("activate", (event) => {
 // -----------------------------
 // OFFLINE PAGE
 // -----------------------------
-const paginaOffline = "/offline";
-
-// fallback para navegação
-const handlerAppShell = createHandlerBoundToURL("/index.html");
+const BASE_URL = self.location.pathname.includes("/app/") ? "/app/" : "/";
+const paginaOffline = `${BASE_URL}offline`;
+const handlerAppShell = createHandlerBoundToURL(`${BASE_URL}index.html`);
 
 registerRoute(
   ({ request }) => request.mode === "navigate",
@@ -52,7 +52,7 @@ registerRoute(
           }),
         ],
       }).handle({ event });
-    } catch (erro) {
+    } catch {
       const cache = await caches.open("fallback-cache");
       const offlineResponse = await cache.match(paginaOffline);
       return offlineResponse || handlerAppShell({ event });
@@ -215,3 +215,58 @@ self.addEventListener("message", async (event) => {
 if (MODO_DEV) {
   console.log("[SW] ativo");
 }
+
+// -----------------------------
+// 🔥 FIREBASE MESSAGING (PUSH)
+// -----------------------------
+importScripts("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js");
+importScripts("https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js");
+
+firebase.initializeApp({
+  apiKey: __FIREBASE_API_KEY__,
+  authDomain: __FIREBASE_AUTH_DOMAIN__,
+  projectId: __FIREBASE_PROJECT_ID__,
+  storageBucket: __FIREBASE_STORAGE_BUCKET__,
+  messagingSenderId: __FIREBASE_MESSAGING_SENDER_ID__,
+  appId: __FIREBASE_APP_ID__,
+});
+
+const messaging = firebase.messaging();
+
+// -----------------------------
+// RECEBER PUSH (BACKGROUND)
+// -----------------------------
+messaging.onBackgroundMessage((payload) => {
+  console.log("[SW] Push recebido:", payload);
+
+  const titulo = payload.notification?.title || "Nova notificação";
+  const opcoes = {
+    body: payload.notification?.body || "",
+    icon: "/icons/icon-192.png",
+    data: payload.data || {},
+  };
+
+  self.registration.showNotification(titulo, opcoes);
+});
+
+// -----------------------------
+// CLICK NA NOTIFICAÇÃO
+// -----------------------------
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  const url = event.notification.data?.url || "/";
+
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientsArr) => {
+      for (const client of clientsArr) {
+        if (client.url.includes(url) && "focus" in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(url);
+      }
+    })
+  );
+});

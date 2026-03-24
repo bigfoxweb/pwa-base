@@ -1,33 +1,43 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import { VitePWA } from "vite-plugin-pwa";
-import pkg from "./package.json";
-import { execSync } from "node:child_process"; 
-
-const commit = execSync("git rev-parse --short HEAD").toString().trim();
+import { defineConfig, loadEnv } from 'vite'
+import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig(({ mode }) => {
-  const emProducao = mode === "production";
-  const base = emProducao ? "/app/" : "/";
+  const env = loadEnv(mode, '.', '')
 
   return {
-    base,
+    base: '/',
 
-   define: {
-    __APP_VERSION__: JSON.stringify(pkg.version),
-    __COMMIT_HASH__: JSON.stringify(commit),
-    "import.meta.env.VITE_BUILD_DATE": JSON.stringify(
-      new Date().toLocaleDateString("pt-BR")
-    ),
-  },
+    define: {
+      __APP_VERSION__: JSON.stringify(env.npm_package_version),
+      'import.meta.env.VITE_BUILD_DATE': JSON.stringify(
+        new Date().toLocaleDateString('pt-BR')
+      ),
+
+      __FIREBASE_API_KEY__: JSON.stringify(env.VITE_FIREBASE_API_KEY),
+      __FIREBASE_AUTH_DOMAIN__: JSON.stringify(env.VITE_FIREBASE_AUTH_DOMAIN),
+      __FIREBASE_PROJECT_ID__: JSON.stringify(env.VITE_FIREBASE_PROJECT_ID),
+      __FIREBASE_STORAGE_BUCKET__: JSON.stringify(env.VITE_FIREBASE_STORAGE_BUCKET),
+      __FIREBASE_MESSAGING_SENDER_ID__: JSON.stringify(env.VITE_FIREBASE_MESSAGING_SENDER_ID),
+      __FIREBASE_APP_ID__: JSON.stringify(env.VITE_FIREBASE_APP_ID),
+    },
+
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://localhost:8000/pwa-base',
+          changeOrigin: true,
+        },
+      },
+    },
 
     plugins: [
       react(),
       VitePWA({
-        // mantém igual
+        strategies: 'injectManifest',
+        srcDir: 'src',
+        filename: 'sw.js',
       }),
     ],
-
-    // resto igual
-  };
-});
+  }
+})
