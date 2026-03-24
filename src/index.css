@@ -1,3 +1,70 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --cor-primaria: #51830f;
+  --cor-primaria-suave: rgba(24, 24, 27, 0.12);
+  --cor-primaria-foco: rgba(24, 24, 27, 0.12);
+  --cor-primaria-sombra: rgba(24, 24, 27, 0.22);
+
+  --cor-secundaria: #a7c75d;
+  --cor-secundaria-suave: rgba(99, 102, 241, 0.16);
+
+  --cor-fundo: #f5f7fb;
+}
+
+
+
+@font-face {
+  font-family: "fonte-texto";
+  src: url("/fonts/inter-v20-latin-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "fonte-titulo";
+  src: url("/fonts/sora-v17-latin-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "fonte-titulo";
+  src: url("/fonts/sora-v17-latin-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ===== CLASSES PADRÃO ===== */
+.fonte-titulo {
+  font-family: "fonte-titulo", sans-serif;
+}
+
+.fonte-texto {
+  font-family: "fonte-texto", sans-serif;
+}
+
+/* ===== NÃO MEXER É BASE DO APLICATIVO ===== */
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-width: 320px;
+  background: var(--cor-fundo);
+  font-family: "fonte-texto", sans-serif;
+}

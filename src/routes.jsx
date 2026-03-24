@@ -2,10 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 import Layout from "./components/Layout";
 
-import Inicio from "./pages/Inicio";
-import Offline from "./pages/Offline";
-import Configuracoes from "./pages/Configuracoes";
-import NaoEncontrado from "./pages/NaoEncontrado";
+import Login from "./pages/Login";
 
 const router = createBrowserRouter([
   {
@@ -14,22 +11,12 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Inicio />,
+        element: <Login />,
       },
-      {
-        path: "configuracoes",
-        element: <Configuracoes />,
-      },
-      {
-        path: "offline",
-        element: <Offline />,
-      },
+    
     ],
   },
-  {
-    path: "*",
-    element: <NaoEncontrado />,
-  },
+
 ]);
 
 export default router;

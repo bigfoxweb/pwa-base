@@ -9,7 +9,7 @@ export default function Menu() {
   ];
 
   return (
-    <nav className="mb-6 flex flex-wrap items-center justify-center gap-2">
+    <nav className="">
       {links.map((link) => {
         const ativo = location.pathname.startsWith(link.to);
 
@@ -17,7 +17,7 @@ export default function Menu() {
           <NavLink
             key={link.to}
             to={link.to}
-            className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
+            className={`rounded-lg hidden px-4 py-2 text-sm font-medium transition ${
               ativo
                 ? "bg-[#81c90e] text-white"
                 : "bg-white text-gray-700 shadow-sm"
